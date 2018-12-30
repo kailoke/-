@@ -3,25 +3,22 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "main.h"
 #include "dict.h"
 #include "translate.h"
 
-dict *list = NULL;
-Pat pat = nonepat;
-char* search;
-char* result;
-void output(int);
-void clean();
+
+dict *list;
+Pat pat;
+char *search;
+char *result;
+
 
 int main(void)
 {
 	// 加载单词库
-	int num = loadWord();
-	if (num == SIZE)
-		printf("<system>词典初始化成功！\n");
-	else
-	{puts("程序即将退出");system("pause");return -2;}
-
+	loadWord();	
+	showmenu();
 	pattern();
 
 	search = (char*)malloc(sizeof(char) * 1024);
@@ -31,19 +28,15 @@ int main(void)
 		memset(search, 0, 1024);
 		memset(result, 0, 1024);
 
-		searchInfo(pat);
-		scanf("%s", search);
-		if (!strcmp(search, "@exit"))
+		transTips(pat);
+		if (txt_scanf(search) == 1) 
 		{
-			printf("程序退出");
-			break;
-		}
-		if (!strcmp(search, "@pattern"))
-		{
+			showmenu();
 			pattern();
 			continue;
 		}
 
+		//根据模式，选择调用翻译函数并输出结果
 		switch (pat)
 		{
 		case eng_chn:
@@ -57,16 +50,22 @@ int main(void)
 		}
 	}
 
-	free(search);
-	free(result);
-	clean();
-	system("pause");
-	return 0;
 }
 
 
 void clean()
 {
+	if (index)
+	{
+		free(index);
+	}
+
+	if (search) 
+	{
+		free(search);
+		free(result);
+	}
+
 	if (!list)
 		return;
 	for (size_t i = 0; i < SIZE; i++)
@@ -75,5 +74,13 @@ void clean()
 		free(list[i].trans);
 	}
 	free(list);
+}
+
+void dict_exit(int i)
+{
+	clean();
+	puts("程序即将退出...");
+	system("pause");
+	exit(i);
 }
 

@@ -121,6 +121,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dict.h" />
+    <ClInclude Include="main.h" />
     <ClInclude Include="translate.h" />
   </ItemGroup>
   <ItemGroup>
